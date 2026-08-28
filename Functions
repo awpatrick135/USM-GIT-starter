@@ -1,5 +1,6 @@
-def getArea (a, b)
+def getArea(a: float, b: float) -> float:
+    """Return the area of a rectangle."""
     return a * b
 
-def getPerimeter (a, b)
+def getPerimeter(a, b):
     return 2 * (a + b)

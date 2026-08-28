@@ -1,0 +1,10 @@
+import shapes.rectangle as rectangle
+import shapes.circle as circle
+
+length = int(input("Enter the length of the rectangle: "))
+width = int(input("Enter the width of the rectangle: "))
+
+area = rectangle.getArea(length, width)
+perimeter = rectangle.getPerimeter(length, width)
+
+print (f"The area is {area} and the perimeter is {perimeter}")

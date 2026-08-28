@@ -1,0 +1,280 @@
+import math
+import tkinter as tk
+
+# --- Window Setup ---
+root = tk.Tk()
+root.title("Geometric Calculator")
+root.geometry("400x500")
+root.configure(bg="#4b4040")
+
+# --- Frames ---
+main_menu_frame = tk.Frame(root, bg="#4b4040")
+rectangle_frame = tk.Frame(root, bg="#f0f0f0")
+circle_frame = tk.Frame(root, bg="#f0f0f0")
+
+
+# --- Dynamic Resizing Handler ---
+def on_resize(event):
+    # Calculate responsive font sizes based on current window width
+    title_size = max(14, int(event.width / 20))
+    subtitle_size = max(10, int(event.width / 32))
+    btn_font_size = max(10, int(event.width / 30))
+
+    # Calculate responsive button width based on window size
+    new_btn_width = max(15, int(event.width / 20))
+
+    # Update Main Menu Elements
+    if "menu_title" in globals() and menu_title is not None:
+        menu_title.config(font=("Helvetica", title_size, "bold"))
+        menu_subtitle.config(font=("Helvetica", subtitle_size))
+        btn_rectangle.config(
+            font=("Arial", btn_font_size, "bold"), width=new_btn_width
+        )
+        btn_circle.config(
+            font=("Arial", btn_font_size, "bold"), width=new_btn_width
+        )
+
+    # Update Shape Page Titles
+    if "rect_title" in globals() and rect_title is not None:
+        rect_title.config(font=("Arial", title_size - 2, "bold"))
+        circle_title.config(font=("Arial", title_size - 2, "bold"))
+
+
+# Bind the window resize event to our function
+root.bind("<Configure>", on_resize)
+
+
+# --- Navigation Functions ---
+def show_rectangle_page():
+    main_menu_frame.pack_forget()
+    circle_frame.pack_forget()
+    rectangle_frame.pack(fill="both", expand=True)
+
+
+def show_circle_page():
+    main_menu_frame.pack_forget()
+    rectangle_frame.pack_forget()
+    circle_frame.pack(fill="both", expand=True)
+
+
+def show_main_menu():
+    rectangle_frame.pack_forget()
+    circle_frame.pack_forget()
+    main_menu_frame.pack(fill="both", expand=True)
+
+
+# --- Math Calculation Functions ---
+def getArea(length, width):
+    return length * width
+
+
+def getPerimeter(length, width):
+    return 2 * (length + width)
+
+
+def getCircleArea(radius):
+    return math.pi * (radius**2)
+
+
+def getCirclePerimeter(radius):
+    return 2 * math.pi * radius
+
+
+def getCircleDiameter(radius):
+    return 2 * radius
+
+
+# ==============================================================================
+# 1. MAIN MENU FRAME
+# ==============================================================================
+menu_title = tk.Label(
+    main_menu_frame,
+    text="Geometric Calculator",
+    font=("Helvetica", 18, "bold"),
+    fg="white",
+    bg="#4b4040",
+)
+menu_title.pack(pady=(40, 10))
+
+menu_subtitle = tk.Label(
+    main_menu_frame,
+    text="Select a shape to calculate:",
+    font=("Helvetica", 12),
+    fg="white",
+    bg="#4b4040",
+)
+menu_subtitle.pack(pady=(0, 20))
+
+btn_rectangle = tk.Button(
+    main_menu_frame,
+    text="Rectangle",
+    font=("Arial", 12, "bold"),
+    width=20,
+    height=2,
+    bg="#4CAF50",
+    fg="white",
+    cursor="hand2",
+    command=show_rectangle_page,
+)
+btn_rectangle.pack(pady=10)
+
+btn_circle = tk.Button(
+    main_menu_frame,
+    text="Circle",
+    font=("Arial", 12, "bold"),
+    width=20,
+    height=2,
+    bg="#2196F3",
+    fg="white",
+    cursor="hand2",
+    command=show_circle_page,
+)
+btn_circle.pack(pady=10)
+
+
+# ==============================================================================
+# 2. RECTANGLE FRAME
+# ==============================================================================
+rect_title = tk.Label(
+    rectangle_frame,
+    text="RECTANGLE CALCULATOR",
+    font=("Arial", 14, "bold"),
+    bg="#f0f0f0",
+)
+rect_title.pack(pady=15)
+
+# Input Fields
+tk.Label(rectangle_frame, text="Enter Length:", bg="#f0f0f0").pack(pady=(5, 0))
+length_entry = tk.Entry(rectangle_frame, font=("Arial", 11))
+length_entry.pack(pady=5)
+
+tk.Label(rectangle_frame, text="Enter Width:", bg="#f0f0f0").pack(pady=(5, 0))
+width_entry = tk.Entry(rectangle_frame, font=("Arial", 11))
+width_entry.pack(pady=5)
+
+
+def calculate_rectangle():
+    try:
+        l = float(length_entry.get())
+        w = float(width_entry.get())
+        if l <= 0 or w <= 0:
+            rect_result_label.config(
+                text="Error: Values must be > 0", fg="red"
+            )
+            return
+
+        area = getArea(l, w)
+        perimeter = getPerimeter(l, w)
+        rect_result_label.config(
+            text=f"Area: {area:,.2f} sq units\nPerimeter: {perimeter:,.2f} units",
+            fg="black",
+        )
+    except ValueError:
+        rect_result_label.config(text="Error: Enter valid numbers", fg="red")
+
+
+btn_calc_rect = tk.Button(
+    rectangle_frame,
+    text="Calculate",
+    font=("Arial", 10, "bold"),
+    bg="#4CAF50",
+    fg="white",
+    command=calculate_rectangle,
+)
+btn_calc_rect.pack(pady=10)
+
+# Display Box for Results
+rect_result_box = tk.LabelFrame(
+    rectangle_frame,
+    text=" Results ",
+    font=("Arial", 10, "bold"),
+    bg="#ffffff",
+    padx=15,
+    pady=15,
+)
+rect_result_box.pack(pady=10, fill="x", padx=20)
+
+rect_result_label = tk.Label(
+    rect_result_box, text="Enter dimensions above", font=("Arial", 11), bg="#ffffff"
+)
+rect_result_label.pack()
+
+btn_back_rect = tk.Button(
+    rectangle_frame, text="← Back to Menu", command=show_main_menu
+)
+btn_back_rect.pack(pady=15)
+
+
+# ==============================================================================
+# 3. CIRCLE FRAME
+# ==============================================================================
+circle_title = tk.Label(
+    circle_frame,
+    text="CIRCLE CALCULATOR",
+    font=("Arial", 14, "bold"),
+    bg="#f0f0f0",
+)
+circle_title.pack(pady=15)
+
+# Input Field
+tk.Label(circle_frame, text="Enter Radius:", bg="#f0f0f0").pack(pady=(5, 0))
+radius_entry = tk.Entry(circle_frame, font=("Arial", 11))
+radius_entry.pack(pady=5)
+
+
+def calculate_circle():
+    try:
+        r = float(radius_entry.get())
+        if r <= 0:
+            circle_result_label.config(
+                text="Error: Radius must be > 0", fg="red"
+            )
+            return
+
+        d = getCircleDiameter(r)
+        a = getCircleArea(r)
+        c = getCirclePerimeter(r)
+
+        circle_result_label.config(
+            text=f"Diameter: {d:,.2f} units\nArea: {a:,.2f} sq units\nCircumference: {c:,.2f} units",
+            fg="black",
+        )
+    except ValueError:
+        circle_result_label.config(text="Error: Enter a valid number", fg="red")
+
+
+btn_calc_circle = tk.Button(
+    circle_frame,
+    text="Calculate",
+    font=("Arial", 10, "bold"),
+    bg="#2196F3",
+    fg="white",
+    command=calculate_circle,
+)
+btn_calc_circle.pack(pady=10)
+
+# Display Box for Results
+circle_result_box = tk.LabelFrame(
+    circle_frame,
+    text=" Results ",
+    font=("Arial", 10, "bold"),
+    bg="#ffffff",
+    padx=15,
+    pady=15,
+)
+circle_result_box.pack(pady=10, fill="x", padx=20)
+
+circle_result_label = tk.Label(
+    circle_result_box, text="Enter radius above", font=("Arial", 11), bg="#ffffff"
+)
+circle_result_label.pack()
+
+btn_back_circle = tk.Button(
+    circle_frame, text="← Back to Menu", command=show_main_menu
+)
+btn_back_circle.pack(pady=15)
+
+
+# --- Start Application ---
+show_main_menu()
+root.mainloop()
